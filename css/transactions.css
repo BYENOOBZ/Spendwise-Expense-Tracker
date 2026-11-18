@@ -1,0 +1,14 @@
+/* transactions.css – filters and table */
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 16px}
+.filters #fSearch{flex:1 1 200px;min-width:160px}
+.table-wrap{overflow-x:auto}
+.tx-table{width:100%;border-collapse:collapse;min-width:640px}
+.tx-table th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--line)}
+.tx-table td{padding:12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tx-table tbody tr{transition:background .15s}.tx-table tbody tr:hover{background:#fafbff}
+.tx-table tr:last-child td{border-bottom:0}
+.r{text-align:right!important}.actions{white-space:nowrap}
+.chip{background:#f1f5f9;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:500}
+.badge{padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.badge.income{background:#e7f8f1;color:#047857}.badge.expense{background:#fdecec;color:#b91c1c}
+.amt{font-weight:600;white-space:nowrap}.amt.income{color:#059669}.amt.expense{color:#dc2626}

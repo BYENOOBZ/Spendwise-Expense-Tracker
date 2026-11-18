@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spendwise – Expense Tracker & Budget Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/transactions.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><span class="logo">₹</span><span>Spendwise</span></div>
+    <nav id="nav">
+      <a href="#dashboard" data-page="dashboard"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+      <a href="#transactions" data-page="transactions"><i data-lucide="arrow-left-right"></i>Transactions</a>
+      <a href="#analytics" data-page="analytics"><i data-lucide="pie-chart"></i>Analytics</a>
+      <a href="#budgets" data-page="budgets"><i data-lucide="target"></i>Budgets</a>
+      <a href="#settings" data-page="settings"><i data-lucide="settings"></i>Settings</a>
+    </nav>
+    <p class="side-note">Data is stored only in this browser.</p>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu"><i data-lucide="menu">☰</i></button>
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="search"><i data-lucide="search"></i><input id="globalSearch" type="search" placeholder="Search transactions…" aria-label="Search transactions"></div>
+      <span class="date" id="today"></span>
+      <button class="btn primary" id="addBtn"><i data-lucide="plus">+</i><span>Add</span></button>
+      <div class="avatar" id="avatar" title="Profile">U</div>
+    </header>
+
+    <main>
+      <section class="page" id="page-dashboard">
+        <div class="cards" id="summaryCards"></div>
+        <div class="grid-2">
+          <div class="card"><h3>Monthly Income vs Expenses</h3><div class="chart-box"><canvas id="barChart"></canvas></div></div>
+          <div class="card"><h3>Expense Distribution <small>This month</small></h3>
+            <div class="chart-box" id="doughnutBox"><canvas id="doughnutChart"></canvas></div>
+            <div class="empty-state hidden" id="doughnutEmpty"><i data-lucide="pie-chart"></i><p>No expenses this month yet.</p></div></div>
+        </div>
+        <div class="card"><div class="card-head"><h3>Recent Transactions</h3><a href="#transactions" class="link">View all →</a></div>
+          <div class="table-wrap" id="recentTable"></div></div>
+      </section>
+
+      <section class="page" id="page-transactions">
+        <div class="card filters">
+          <input id="fSearch" type="search" placeholder="Search by title">
+          <select id="filterType"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expense</option></select>
+          <select id="filterCategory"></select>
+          <label class="inline">From <input type="date" id="filterFrom"></label>
+          <label class="inline">To <input type="date" id="filterTo"></label>
+          <select id="filterSort"><option value="desc">Newest first</option><option value="asc">Oldest first</option></select>
+          <button class="btn" id="clearFilters">Clear</button>
+        </div>
+        <div class="card"><div class="card-head"><h3>All Transactions <small id="txCount"></small></h3>
+          <button class="btn primary" id="addBtn2"><i data-lucide="plus">+</i>Add transaction</button></div>
+          <div class="table-wrap" id="txTable"></div></div>
+      </section>
+
+      <section class="page" id="page-analytics">
+        <div class="toolbar"><label class="inline">Period
+          <select id="periodSelect"><option value="this-month">This month</option><option value="last-month">Last month</option><option value="last-6">Last 6 months</option><option value="year">This year</option></select></label></div>
+        <div class="cards three" id="analyticsCards"></div>
+        <div class="grid-2">
+          <div class="card"><h3>Spending Trend <small id="trendNote"></small></h3><div class="chart-box"><canvas id="trendChart"></canvas></div></div>
+          <div class="card"><h3>Category Breakdown</h3><div id="categoryBreakdown"></div></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-budgets">
+        <div class="toolbar"><label class="inline">Month <input type="month" id="budgetMonth"></label></div>
+        <div id="budgetAlerts"></div>
+        <div id="budgetBody"></div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="card settings">
+          <h3>Profile</h3>
+          <label>Display name<input id="prefName" maxlength="30" placeholder="Your name"></label>
+          <button class="btn primary" id="saveName">Save name</button>
+        </div>
+        <div class="card settings">
+          <h3>Data</h3>
+          <p class="muted" id="storageInfo"></p>
+          <div class="btn-row">
+            <button class="btn" id="exportBtn"><i data-lucide="download">↓</i>Export CSV</button>
+            <button class="btn" id="resetBtn"><i data-lucide="rotate-ccw">↺</i>Reset demo data</button>
+            <button class="btn danger-btn" id="clearBtn"><i data-lucide="trash-2">✕</i>Clear all transactions</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <form class="modal-card" id="txForm" novalidate>
+    <div class="card-head"><h3 id="modalTitle">Add Transaction</h3><button type="button" class="icon-btn" id="modalClose" aria-label="Close"><i data-lucide="x">✕</i></button></div>
+    <div class="form-grid">
+      <label>Type<select id="fType"><option value="expense">Expense</option><option value="income">Income</option></select></label>
+      <label>Category<select id="fCategory"></select><span class="err" id="e-category"></span></label>
+      <label class="full">Title<input id="fTitle" maxlength="60" placeholder="e.g. Groceries"><span class="err" id="e-title"></span></label>
+      <label>Amount (₹)<input id="fAmount" type="number" step="0.01" min="0" placeholder="0.00"><span class="err" id="e-amount"></span></label>
+      <label>Date<input id="fDate" type="date"><span class="err" id="e-date"></span></label>
+      <label class="full">Description (optional)<textarea id="fDesc" rows="2" maxlength="200"></textarea></label>
+    </div>
+    <div class="btn-row end"><button type="button" class="btn" id="modalCancel">Cancel</button><button class="btn primary" type="submit">Save</button></div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.263.1/dist/umd/lucide.min.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/transactions.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/analytics.js"></script>
+<script src="js/budgets.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
